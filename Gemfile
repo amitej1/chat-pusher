@@ -38,3 +38,5 @@ gem 'devise'
 
 # To use debugger
 # gem 'debugger'
+
+gem 'pusher'

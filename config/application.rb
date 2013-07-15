@@ -58,5 +58,11 @@ module Privatechat
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    require 'pusher'
+  Pusher.logger = Rails.logger
+  Pusher.app_id = 48019
+  Pusher.key = '64f47e8c5e5a280bd32a'
+  Pusher.secret = '8852b294b1e320ffaf9b'
   end
 end

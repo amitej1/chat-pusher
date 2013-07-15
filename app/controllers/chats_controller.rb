@@ -9,4 +9,19 @@ class ChatsController < ApplicationController
    
    @chats = Chat.where(("sender_id = '#{current_user[:id]}' AND receiver_id = '#{user[:id]}') OR (receiver_id = '#{current_user[:id]}' AND sender_id = '#{user[:id]}'"))
 	end
+
+	def create
+    chat = Chat.new(params[:chat])
+    chat.sender_id = current_user.id
+    if chat.save
+      flash[:notice] = "you created a message"
+      redirect_to '/'
+      
+      # Send a Pusher notification
+      Pusher['private-'].trigger('chat', {:from => current_user.id, :chat => chat.chat})
+    else
+      @user = User.find(params[:chat][:receiver_id])
+      render :action => 'users/show'
+    end
+  end
 end	

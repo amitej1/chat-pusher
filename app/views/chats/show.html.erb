@@ -1,7 +1,10 @@
+<div id = "chat">
 <%= render @chats %>
+</div>
 <%= form_for Chat.new, remote: true do |f| %>
     <%= f.label :chat %><br>
     <%= f.text_area :chat %><br>
-    <%= f.hidden_field :recid, :value => @user.id %>
+    <%= f.hidden_field :receiver_id, :value => @user.id %>
     <%= f.submit "Send" %>
 <% end %>
+
