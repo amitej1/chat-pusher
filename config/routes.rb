@@ -59,4 +59,6 @@ Privatechat::Application.routes.draw do
   # match ':controller(/:action(/:id))(.:format)'
   resources :chats
   root :to => 'chats#index'
+
+  post 'pusher/auth'
 end
