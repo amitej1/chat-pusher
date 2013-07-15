@@ -5,6 +5,7 @@
     <%= f.label :chat %><br>
     <%= f.text_area :chat %><br>
     <%= f.hidden_field :receiver_id, :value => @user.id %>
+     <%= f.hidden_field :sender_id, :value => current_user.id %>
     <%= f.submit "Send" %>
 <% end %>
 
