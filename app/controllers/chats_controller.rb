@@ -12,14 +12,15 @@ class ChatsController < ApplicationController
 
 	def create
     chat = Chat.new(params[:chat])
+     @user = User.find(params[:chat][:receiver_id])
     chat.sender_id = current_user.id
     if chat.save
       flash[:notice] = "you created a message"
       redirect_to '/'
       
       # Send a Pusher notification
-      Pusher['private-'+params[:chat][:receiver_id]].trigger('chat', {:from => current_user.id, :chat => chat.chat})
-      Pusher['private-'+params[:chat][:sender_id]].trigger('chat', {:from => current_user.id, :chat => chat.chat})
+      Pusher['private-'+params[:chat][:receiver_id]+params[:chat][:sender_id]].trigger('chat', {:from => current_user.id, :chat => chat.chat})
+      Pusher['private-'+params[:chat][:sender_id]+params[:chat][:receiver_id]].trigger('chat', {:from => current_user.id, :chat => chat.chat})
     else
       @user = User.find(params[:chat][:receiver_id])
       render :action => 'users/show'
