@@ -17,13 +17,16 @@
       
       channel.bind('chat', function(data) {
         msg = data.chat;
-        dom_notify(msg);
+        id = data.from;
+        dom_notify(msg,id);
         title_notify(msg);
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
       
       // In DOM alert
-      function dom_notify(msg) {
+      function dom_notify(msg,id) {
+        $('#chat').append(id);
+        $('#chat').append(":&nbsp;&nbsp;&nbsp;");
         $('#chat').append(msg);
         $("#new_chat")[0].reset();
       }
