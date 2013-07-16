@@ -1,6 +1,11 @@
 class ChatsController < ApplicationController
 	def index
 		@users = User.all
+    @users.each do |user|
+      if user.signed_in?
+        Pusher['presence-public-101'].trigger('online',{:email => user.email})
+      end
+    end
 	end	
 
 	def show
