@@ -1,10 +1,10 @@
 class ChatsController < ApplicationController
 	def index
-		@users = User.all
-    
+		if user_signed_in?
+    user = current_user
           
         #Pusher['presence-public-101'].trigger('online',{:email => user.email, :id => user.id, :updated => user.updated_at})
-      
+      end
 	end	
 
 	def show
@@ -18,6 +18,7 @@ class ChatsController < ApplicationController
     chat = Chat.new(params[:chat])
      @user = User.find(params[:chat][:receiver_id])
     chat.sender_id = current_user.id
+    @sender = current_user
     if chat.save
       flash[:notice] = "you created a message"
       redirect_to '/'

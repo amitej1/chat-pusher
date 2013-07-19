@@ -36,6 +36,33 @@
       
     
 	});
+
+    $(function() {
+      var pusher = new Pusher('64f47e8c5e5a280bd32a');
+    var presenceChannel = pusher.subscribe('presence-public-101');
+      
+      presenceChannel.bind('pusher:subscription_succeeded', function(member_list){
+    updateCount(member_list.count);
+    members.each(function(member) {
+      $('#online').append(member.info.email);
+    });
+  });
+
+  // When somebody joins, pop a note to tell the user
+  presenceChannel.bind('pusher:member_added', function(member) {
+    $('#online').append(member.info.email);
+    scrollToTheTop();
+    updateCount(1);
+  });
+  
+  // When somebody leaves, pop a note to tell the user
+  presenceChannel.bind('pusher:member_removed', function(member) {
+    $('#online').remove(member.info.email);
+    scrollToTheTop();
+    updateCount(-1);
+  });
+      
+    });
     
       // <title> msg
       
@@ -53,6 +80,9 @@
 <%= yield %>
 <br><br>
 <% if user_signed_in? %>
+<div id = "online">
+  
+</div>
 "Welcome" <%= current_user.email %>
 <%= link_to('logout',destroy_user_session_path, :method=>'delete') %>
 <% else %>
