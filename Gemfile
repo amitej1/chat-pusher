@@ -40,3 +40,7 @@ gem 'devise'
 # gem 'debugger'
 
 gem 'pusher'
+
+group :production do
+  gem 'pg'
+  end
