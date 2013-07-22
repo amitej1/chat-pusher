@@ -11,31 +11,7 @@
   <script src="/javascripts/jquery.titlealert.js"></script>
 
    <script type="text/javascript" charset="utf-8">
-    $(function() {
-      var pusher = new Pusher('64f47e8c5e5a280bd32a'); // Replace with your app key
-      var channel = pusher.subscribe('private-'+<%= current_user ? current_user.id : 'null' %>+<%= @user ? @user.id : 'null' %>);
-
-      
-      
-      channel.bind('chat', function(data) {
-        msg = data.chat;
-        id = data.from;
-        dom_notify(msg,id);
-        title_notify(msg);
-        if (window.webkitNotifications) { webkit_notify(msg); }
-      });
-      
-      // In DOM alert
-      function dom_notify(msg,id) {
-        $('#chat').append(id);
-        $('#chat').append(":&nbsp;&nbsp;&nbsp;");
-        $('#chat').append(msg);
-        $("#new_chat")[0].reset();
-      }
- 
-      
-    
-	});
+   
 
     $(function() {
       var pusher = new Pusher('64f47e8c5e5a280bd32a');
@@ -49,20 +25,16 @@
   });
 
       presenceChannel.bind('online', function(data) {
-        email = data.email;
-       
-        $('#online').append(email);
+        presenceChannel.members.each(function(member) {
+  $('#online').append(member.info.email);
+  
+});
       });
 
   // When somebody joins, pop a note to tell the user
   presenceChannel.bind('pusher:member_added', function(member) {
-    $('#online').append(member.info.email);
-    scrollToTheTop();
-    updateCount(1);
-     presenceChannel.members.each(function(member) {
-  $('#online').append(member.info.email);
-  
-});
+     add_member(member.id, member.info);
+     
   });
   
   // When somebody leaves, pop a note to tell the user
