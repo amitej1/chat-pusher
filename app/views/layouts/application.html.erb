@@ -44,15 +44,25 @@
       presenceChannel.bind('pusher:subscription_succeeded', function(member_list){
     updateCount(member_list.count);
     members.each(function(member) {
-      $('#online').append(member.info.email);
+     add_member(member.id, member.info);
     });
   });
+
+      presenceChannel.bind('online', function(data) {
+        email = data.email;
+       
+        $('#online').append(email);
+      });
 
   // When somebody joins, pop a note to tell the user
   presenceChannel.bind('pusher:member_added', function(member) {
     $('#online').append(member.info.email);
     scrollToTheTop();
     updateCount(1);
+     presenceChannel.members.each(function(member) {
+  $('#online').append(member.info.email);
+  
+});
   });
   
   // When somebody leaves, pop a note to tell the user
@@ -61,6 +71,8 @@
     scrollToTheTop();
     updateCount(-1);
   });
+
+ 
       
     });
     
