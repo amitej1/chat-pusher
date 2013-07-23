@@ -25,10 +25,12 @@
   });
 
       presenceChannel.bind('online', function(data) {
-        presenceChannel.members.each(function(member) {
-  $('#online').append(member.info.email);
-  
-});
+        email = data.email
+        users = presenceChannel.members;
+        presenceChannel.members.each(function(member){
+           $('#online').append(member.info.email);
+        });
+        $('#online').append(data.email);
       });
 
   // When somebody joins, pop a note to tell the user
@@ -39,7 +41,7 @@
   
   // When somebody leaves, pop a note to tell the user
   presenceChannel.bind('pusher:member_removed', function(member) {
-    $('#online').remove(member.info.email);
+   remove_member(member.id, member.info);
     scrollToTheTop();
     updateCount(-1);
   });
