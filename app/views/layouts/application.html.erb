@@ -17,32 +17,25 @@
       var pusher = new Pusher('64f47e8c5e5a280bd32a');
     var presenceChannel = pusher.subscribe('presence-public-101');
       
-      presenceChannel.bind('pusher:subscription_succeeded', function(member_list){
-    updateCount(member_list.count);
-   $('#online').empty()
-
+      presenceChannel.bind('pusher:subscription_succeeded', function(members){
+    
+   
+   
     members.each(add_member);
   });
 
-      presenceChannel.bind('online', function(data) {
-        email = data.email
-        users = presenceChannel.members;
-        presenceChannel.members.each(function(member){
-           $('#online').append(member.info.email);
-        });
-        $('#online').append(data.email);
-      });
+      
 
   // When somebody joins, pop a note to tell the user
   presenceChannel.bind('pusher:member_added', function(member) {
      add_member(member);
-      $('#online').append(member.id);
+      
      
   });
   
   // When somebody leaves, pop a note to tell the user
   presenceChannel.bind('pusher:member_removed', function(member) {
-   remove_member(member.id, member.info);
+   $('#online_' + member.id).remove();
     scrollToTheTop();
     updateCount(-1);
   });
@@ -55,11 +48,12 @@ function add_member(member) {
     id: "online_" + member.id
   })
   
-  content = member.info.email 
- 
+  if(member.id != <%= current_user.id %>){
+  content = "<a href=/chats/"+member.id + ">"+member.info.email+ "</a>" 
+ }
   
   
-
+  //$('#online').append(presenceChannel.members.count)
   $('#online').append(container.html(content))
  
       }

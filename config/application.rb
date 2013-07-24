@@ -64,5 +64,9 @@ module Privatechat
   Pusher.app_id = 48019
   Pusher.key = '64f47e8c5e5a280bd32a'
   Pusher.secret = '8852b294b1e320ffaf9b'
+
+  PUSHER_JS_DOMAIN = 'http://js.pusher.com'
+PUSHER_SOCKET_HOST = 'ws.pusherapp.com'
+PUSHER_WS_PORT = 80
   end
 end
