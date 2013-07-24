@@ -3,7 +3,7 @@ class ChatsController < ApplicationController
 		if user_signed_in?
     user = current_user
           
-        Pusher['presence-public-101'].trigger('online',{:email => user.email, :id => user.id, :updated => user.updated_at})
+        #Pusher['presence-public-101'].trigger('online',{:email => user.email, :id => user.id, :updated => user.updated_at})
       end
 	end	
 

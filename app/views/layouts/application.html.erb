@@ -19,9 +19,9 @@
       
       presenceChannel.bind('pusher:subscription_succeeded', function(member_list){
     updateCount(member_list.count);
-    members.each(function(member) {
-     add_member(member.id, member.info);
-    });
+   $('#online').empty()
+
+    members.each(add_member);
   });
 
       presenceChannel.bind('online', function(data) {
@@ -35,7 +35,8 @@
 
   // When somebody joins, pop a note to tell the user
   presenceChannel.bind('pusher:member_added', function(member) {
-     add_member(member.id, member.info);
+     add_member(member);
+      $('#online').append(member.id);
      
   });
   
@@ -46,8 +47,22 @@
     updateCount(-1);
   });
 
+function add_member(member) {
+   var content
+  var rand = rand = (Math.random() * 20) - 10
+  var container = $("<div>", {
+    
+    id: "online_" + member.id
+  })
+  
+  content = member.info.email 
  
-      
+  
+  
+
+  $('#online').append(container.html(content))
+ 
+      }
     });
     
       // <title> msg
