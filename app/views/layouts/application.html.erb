@@ -18,10 +18,11 @@
     var presenceChannel = pusher.subscribe('presence-public-101');
       
       presenceChannel.bind('pusher:subscription_succeeded', function(members){
-    
+   
    
    
     members.each(add_member);
+
   });
 
       
@@ -29,15 +30,14 @@
   // When somebody joins, pop a note to tell the user
   presenceChannel.bind('pusher:member_added', function(member) {
      add_member(member);
-      
+    
      
   });
   
   // When somebody leaves, pop a note to tell the user
   presenceChannel.bind('pusher:member_removed', function(member) {
    $('#online_' + member.id).remove();
-    scrollToTheTop();
-    updateCount(-1);
+   
   });
 
   $(function() {
@@ -75,11 +75,17 @@ function add_member(member) {
     id: "online_" + member.id
   })
   
+      
   if(<%= user_signed_in? %>){
-  if(member.id != <%= current_user.id %>){
+  //if(member.id != presenceChannel.members.me.id ){
   content = "<a href=/chats/"+member.id + ">"+member.info.email+ "</a>" 
- }
-  }
+// }
+//}
+}else{
+  content=""
+}
+  
+  
   
   //$('#online').append(presenceChannel.members.count)
   $('#online').append(container.html(content))
