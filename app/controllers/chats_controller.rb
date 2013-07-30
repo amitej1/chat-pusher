@@ -24,7 +24,7 @@ class ChatsController < ApplicationController
       redirect_to '/'
       
       # Send a Pusher notification
-      Pusher['private-'+params[:chat][:receiver_id]+params[:chat][:sender_id]].trigger('chat', {:from => current_user.email, :chat => chat.chat})
+      Pusher['private-'+params[:chat][:receiver_id]+params[:chat][:sender_id]].trigger('chat1', {:from => current_user.email, :chat => chat.chat})
       Pusher['private-'+params[:chat][:sender_id]+params[:chat][:receiver_id]].trigger('chat', {:from => current_user.email, :chat => chat.chat})
     
     else

@@ -53,6 +53,14 @@
         title_notify(msg);
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
+
+      channel.bind('chat1', function(data) {
+        msg = data.chat;
+        id = data.from;
+        dom_notify1(msg,id);
+        title_notify(msg);
+        if (window.webkitNotifications) { webkit_notify(msg); }
+      });
       
       // In DOM alert
       function dom_notify(msg,id) {
@@ -61,6 +69,14 @@
         $('#chat').append(msg);
         $('#chat').append("<br>");
         $("#new_chat")[0].reset();
+      }
+
+      function dom_notify1(msg,id) {
+        $('#chat').append(id);
+        $('#chat').append(":&nbsp;&nbsp;&nbsp;");
+        $('#chat').append(msg);
+        $('#chat').append("<br>");
+        
       }
  
       
