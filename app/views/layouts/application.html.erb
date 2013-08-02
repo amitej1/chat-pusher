@@ -50,7 +50,10 @@
       channel.bind('chat', function(data) {
         msg = data.chat;
         id = data.from;
+        
         dom_notify(msg,id);
+
+        
         title_notify(msg);
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
@@ -59,8 +62,21 @@
 
         msg = data.chat;
         id = data.from;
-         
+        
         dom_notify1(msg,id);
+        
+        title_notify(msg);
+        if (window.webkitNotifications) { webkit_notify(msg); }
+      });
+
+      channel.bind('popup', function(data) {
+
+        msg = data.chat;
+        id = data.from;
+         uid = data.id;
+         user_notify(uid);
+        //dom_notify1(msg,id);
+        
         title_notify(msg);
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
@@ -72,14 +88,25 @@
         $('#chat').append(msg);
         $('#chat').append("<br>");
         $("#new_chat")[0].reset();
+        
       }
 
-      function dom_notify1(msg,id) {
+      function dom_notify1(msg,id,uid) {
         $('#chat').append(id);
         $('#chat').append(":&nbsp;&nbsp;&nbsp;");
         $('#chat').append(msg);
         $('#chat').append("<br>");
         
+        
+      }
+
+      function user_notify(uid) {
+        var container = $("<div>", {
+    
+      id: "online_" + uid
+  })
+        var content = "sent you a message"
+        $('#online').append(container.html(content))
       }
  
       
