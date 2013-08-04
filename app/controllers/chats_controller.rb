@@ -25,7 +25,8 @@ class ChatsController < ApplicationController
       
       # Send a Pusher notification
       Pusher['private-'+params[:chat][:receiver_id]+params[:chat][:sender_id]].trigger('chat1', {:from => current_user.email, :chat => chat.chat})
-      Pusher['private-'+params[:chat][:receiver_id]+'null'].trigger('popup', {:from => current_user.email, :chat => chat.chat, :id => current_user.id})
+      #Pusher['private-'+params[:chat][:receiver_id]+'null'].trigger('popup', {:from => current_user.email, :chat => chat.chat, :id => current_user.id})
+      Pusher['normal-'+params[:chat][:receiver_id]].trigger('popup', { :id => current_user.id})
       Pusher['private-'+params[:chat][:sender_id]+params[:chat][:receiver_id]].trigger('chat', {:from => current_user.email, :chat => chat.chat})
       #Pusher['presence-public-101'].trigger('incoming', {:from => current_user.email})
     else

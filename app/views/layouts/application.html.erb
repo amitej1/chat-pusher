@@ -40,10 +40,36 @@
    $('#online_' + member.id).remove();
    
   });
+  function add_member(member) {
+   var content
+  var rand = rand = (Math.random() * 20) - 10
+  var container = $("<div>", {
+    
+    id: "online_" + member.id
+  })
+  
+      
+  if(<%= user_signed_in? %>){
+  //if(member.id != presenceChannel.members.me.id ){
+  content = "<a href=/chats/"+member.id + ">"+member.info.email+ "</a>" 
+// }
+//}
+}else{
+  content=""
+}
+  
+  
+  
+  //$('#online').append(presenceChannel.members.count)
+  $('#online').append(container.html(content))
+ 
+      }
+    
 
-  $(function() {
+ 
       var pusher = new Pusher('aaf22ec58ddbff4643d5'); // Replace with your app key
       var channel = pusher.subscribe('private-'+<%= current_user ? current_user.id : 'null' %>+<%= @user ? @user.id : 'null' %>);
+
 
       
       
@@ -91,7 +117,7 @@
         
       }
 
-      function dom_notify1(msg,id,uid) {
+      function dom_notify1(msg,id) {
         $('#chat').append(id);
         $('#chat').append(":&nbsp;&nbsp;&nbsp;");
         $('#chat').append(msg);
@@ -101,43 +127,30 @@
       }
 
       function user_notify(uid) {
-        var container = $("<div>", {
-    
-      id: "online_" + uid
-  })
-        var content = "sent you a message"
-        $('#online').append(container.html(content))
+        
+        var content = " sent you a message"
+        $('#online_'+uid).append(content)
       }
  
-      
+
+      var pusher = new Pusher('aaf22ec58ddbff4643d5');
+      var channel1 = pusher.subscribe('normal-'+<%= current_user ? current_user.id : 'null' %>);
+
+      channel1.bind('popup', function(data) {
+
+        msg = data.chat;
+        id = data.from;
+         uid = data.id;
+         user_notify(uid);
+        //dom_notify1(msg,id);
+        
+        title_notify(msg);
+        if (window.webkitNotifications) { webkit_notify(msg); }
+      });
     
   });
 
-function add_member(member) {
-   var content
-  var rand = rand = (Math.random() * 20) - 10
-  var container = $("<div>", {
-    
-    id: "online_" + member.id
-  })
-  
-      
-  if(<%= user_signed_in? %>){
-  //if(member.id != presenceChannel.members.me.id ){
-  content = "<a href=/chats/"+member.id + ">"+member.info.email+ "</a>" 
-// }
-//}
-}else{
-  content=""
-}
-  
-  
-  
-  //$('#online').append(presenceChannel.members.count)
-  $('#online').append(container.html(content))
- 
-      }
-    });
+
     
       // <title> msg
       
