@@ -100,7 +100,7 @@
         msg = data.chat;
         id = data.from;
          uid = data.id;
-         user_notify(uid);
+         user_notify(msg,id,uid);
         //dom_notify1(msg,id);
         
         title_notify(msg);
@@ -126,10 +126,13 @@
         
       }
 
-      function user_notify(uid) {
+      function user_notify(msg,id,uid) {
         
-        var content = " sent you a message"
-        $('#online_'+uid).append(content)
+        $('#online_'+uid).empty();
+         var name = "<a href=/chats/"+uid + ">"+id+ "</a>"; 
+         $('#online_'+uid).append(name);
+         var content = " sent you a message";
+         $('#online_'+uid).append(content);
       }
  
 
@@ -141,7 +144,7 @@
         msg = data.chat;
         id = data.from;
          uid = data.id;
-         user_notify(uid);
+         user_notify(msg,id,uid);
         //dom_notify1(msg,id);
         
         title_notify(msg);
