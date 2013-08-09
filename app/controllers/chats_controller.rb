@@ -12,8 +12,8 @@ class ChatsController < ApplicationController
    @user = user
    
    @chats = Chat.where(("sender_id = '#{current_user[:id]}' AND receiver_id = '#{user[:id]}') OR (receiver_id = '#{current_user[:id]}' AND sender_id = '#{user[:id]}'"))
-	end
-
+   #Pusher['private-'+''+current_user.id.to_s+''+@user.id.to_s].trigger('active', {:to => @user.email, :uid => @user.id})
+ end
 	def create
     chat = Chat.new(params[:chat])
      @user = User.find(params[:chat][:receiver_id])
@@ -24,14 +24,16 @@ class ChatsController < ApplicationController
       redirect_to '/'
       
       # Send a Pusher notification
-      Pusher['private-'+params[:chat][:receiver_id]+params[:chat][:sender_id]].trigger('chat1', {:from => current_user.email, :chat => chat.chat})
+      Pusher['private-'+params[:chat][:receiver_id]+params[:chat][:sender_id]].trigger('chat1', {:from => current_user.email, :chat => chat.chat, :id => current_user.id})
       #Pusher['private-'+params[:chat][:receiver_id]+'null'].trigger('popup', {:from => current_user.email, :chat => chat.chat, :id => current_user.id})
       Pusher['normal-'+params[:chat][:receiver_id]].trigger('popup', {:from => current_user.email, :chat => chat.chat, :id => current_user.id})
-      Pusher['private-'+params[:chat][:sender_id]+params[:chat][:receiver_id]].trigger('chat', {:from => current_user.email, :chat => chat.chat})
+      Pusher['private-'+params[:chat][:sender_id]+params[:chat][:receiver_id]].trigger('chat', {:from => current_user.email, :chat => chat.chat, :id => current_user.id})
       #Pusher['presence-public-101'].trigger('incoming', {:from => current_user.email})
     else
       @user = User.find(params[:chat][:receiver_id])
       render :action => 'users/show'
     end
   end
+
+ 
 end	

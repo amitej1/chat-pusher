@@ -6,7 +6,8 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->    
+  <!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
   <script src="http://js.pusher.com/2.1/pusher.js"></script>
   <script src="/javascripts/jquery.titlealert.js"></script>
   <script src="http://js.pusher.com/2.1.1/sockjs.js"></script>
@@ -14,10 +15,16 @@
    <script type="text/javascript" charset="utf-8">
    
    
+
+
+
     $(function() {
       var pusher = new Pusher('aaf22ec58ddbff4643d5');
     var presenceChannel = pusher.subscribe('presence-public-101');
       
+      
+
+
       presenceChannel.bind('pusher:subscription_succeeded', function(members){
    
    
@@ -40,6 +47,9 @@
    $('#online_' + member.id).remove();
    
   });
+
+   
+
   function add_member(member) {
    var content
   var rand = rand = (Math.random() * 20) - 10
@@ -57,6 +67,7 @@
 }else{
   content=""
 }
+    
   
   
   
@@ -64,13 +75,16 @@
   $('#online').append(container.html(content))
  
       }
+
+
+      
     
 
  
       var pusher = new Pusher('aaf22ec58ddbff4643d5'); // Replace with your app key
       var channel = pusher.subscribe('private-'+<%= current_user ? current_user.id : 'null' %>+<%= @user ? @user.id : 'null' %>);
 
-
+      var is_typing_currently = false;
       
       
       channel.bind('chat', function(data) {
@@ -78,21 +92,29 @@
         id = data.from;
         
         dom_notify(msg,id);
+       
+        
+        title_notify(msg);
+        
+      });
 
+      channel.bind('chat1', function(data) {
+        uid = data.id
+        msg = data.chat;
+        id = data.from;
+        
+        
+        dom_notify1(msg,id,uid);
         
         title_notify(msg);
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
 
-      channel.bind('chat1', function(data) {
+      channel.bind('active', function(data) {
+        to = data.to;
+        uid = data.id;
+        active_notify(to,uid);
 
-        msg = data.chat;
-        id = data.from;
-        
-        dom_notify1(msg,id);
-        
-        title_notify(msg);
-        if (window.webkitNotifications) { webkit_notify(msg); }
       });
 
       channel.bind('popup', function(data) {
@@ -106,6 +128,58 @@
         title_notify(msg);
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
+
+      channel.bind('typing_status', function(notification) {
+        
+    if(notification.id == <%= current_user ? current_user.id : 'null' %>) return false;
+    if(notification.status == "true") {
+      $('#activea').append('<li class="note" id="is_typing_'+ notification.id +'"><strong>' + notification.from + '</strong> is typing...</li>');
+    } else {
+      $('#activea #is_typing_' + notification.id).remove();
+    }
+    scrollToTheTop();
+  });
+
+
+      $('#chat_chat').keydown(function(e)
+  {
+
+    if (e.keyCode == 13) { send_message(); return false; }
+  });
+      var timout_function = function() {
+      
+    is_typing_currently = false;
+    typing_status(false);
+  }
+  var typing_end_timeout;
+  $('#chat_chat').keyup(function()
+  {
+   
+    // Clear the timeout to stop annoying notifications coming every time you clear the field
+    
+    clearTimeout(typing_end_timeout);
+    if($(this).val() == '' && is_typing_currently) {
+      // Has stopped typing by clearing the field
+      typing_end_timeout = setTimeout(timout_function, 1500);
+    } else {
+      // If your not currently typing then send the notification
+      if(!is_typing_currently) { is_typing_currently = true; typing_status(true); }
+    }
+  });
+
+
+  function typing_status(status) { 
+  // We don't care about the response or even if the sever gets it.. nothing important!
+
+  var user1 = "<%=  @user ? @user.id : 'null' %>";
+  var user_current = "<%= current_user ? current_user.id : 'null' %>";
+  var user_mail = "<%= current_user ? current_user.email : 'null' %>";
+  
+  $.post('/pusher/typing_status', {"status":status, "user":user1, "current_user":user_current, "user_mail":user_mail });
+}
+
+      
+     
       
       // In DOM alert
       function dom_notify(msg,id) {
@@ -117,13 +191,17 @@
         
       }
 
-      function dom_notify1(msg,id) {
+      function dom_notify1(msg,id,uid) {
         $('#chat').append(id);
         $('#chat').append(":&nbsp;&nbsp;&nbsp;");
         $('#chat').append(msg);
         $('#chat').append("<br>");
+        $('#activea #is_typing_' + uid).remove();
         
-        
+      }
+
+      function active_notify(to,uid){
+        $('p#activea').append("is typing");
       }
 
       function user_notify(msg,id,uid) {
@@ -134,6 +212,10 @@
          var content = " sent you a message";
          $('#online_'+uid).append(content);
       }
+
+     
+
+
  
 
       var pusher = new Pusher('aaf22ec58ddbff4643d5');
@@ -167,7 +249,6 @@
   
 </head>
 <body>
-
 <%= yield %>
 <br><br>
 <% if user_signed_in? %>
