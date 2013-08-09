@@ -133,7 +133,7 @@
         
     if(notification.id == <%= current_user ? current_user.id : 'null' %>) return false;
     if(notification.status == "true") {
-      $('#activea').append('<li class="note" id="is_typing_'+ notification.id +'"><strong>' + notification.from + '</strong> is typing...</li>');
+      $('#activea').append('<div class="note" id="is_typing_'+ notification.id +'"><strong>' + notification.from + '</strong> is typing...</div>');
     } else {
       $('#activea #is_typing_' + notification.id).remove();
     }
