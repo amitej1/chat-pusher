@@ -90,11 +90,13 @@
       channel.bind('chat', function(data) {
         msg = data.chat;
         id = data.from;
-        
+        is_typing_currently = false;
+        typing_status(false);
         dom_notify(msg,id);
        
         
         title_notify(msg);
+        
         
       });
 
@@ -104,9 +106,11 @@
         id = data.from;
         
         
+        
         dom_notify1(msg,id,uid);
         
         title_notify(msg);
+         
         if (window.webkitNotifications) { webkit_notify(msg); }
       });
 
@@ -170,7 +174,7 @@
 
   function typing_status(status) { 
   // We don't care about the response or even if the sever gets it.. nothing important!
-
+  
   var user1 = "<%=  @user ? @user.id : 'null' %>";
   var user_current = "<%= current_user ? current_user.id : 'null' %>";
   var user_mail = "<%= current_user ? current_user.email : 'null' %>";
@@ -196,7 +200,7 @@
         $('#chat').append(":&nbsp;&nbsp;&nbsp;");
         $('#chat').append(msg);
         $('#chat').append("<br>");
-        $('#activea #is_typing_' + uid).remove();
+       
         
       }
 
